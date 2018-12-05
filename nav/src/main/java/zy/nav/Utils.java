@@ -3,9 +3,14 @@ package zy.nav;
 final class Utils {
 
     static void requireNonNull(Object obj, String msg) {
-        if (obj == null) {
-            throw new NullPointerException(msg);
+        assertAndThrow(obj == null, msg);
+    }
+
+    static void assertAndThrow(boolean established, String msg) {
+        if (established) {
+            return;
         }
+        throw new RuntimeException(msg);
     }
 
 }

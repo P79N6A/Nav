@@ -5,7 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
-interface NavHost {
+/**
+ * 路由发起者
+ * 因为Fragment#startActivityForResult用宿主Activity来发起的话，走不到Fragment里的onActivityResult方法，
+ * 所以抽取该接口
+ */
+interface Initiator {
 
     Context getContext();
 
@@ -15,24 +20,24 @@ interface NavHost {
 
     class Factory {
 
-        static NavHost from(Context context) {
-            return new HostContext(context);
+        static Initiator from(Context context) {
+            return new NavContext(context);
         }
 
-        static NavHost from(Activity activity) {
-            return new HostActivity(activity);
+        static Initiator from(Activity activity) {
+            return new NavActivity(activity);
         }
 
-        static NavHost from(Fragment fragment) {
-            return new HostFragment(fragment);
+        static Initiator from(Fragment fragment) {
+            return new NavFragment(fragment);
         }
     }
 
-    class HostContext implements NavHost {
+    class NavContext implements Initiator {
 
         final Context context;
 
-        HostContext(Context context) {
+        NavContext(Context context) {
             Utils.requireNonNull(context, "context must not be null");
             this.context = context;
         }
@@ -57,9 +62,9 @@ interface NavHost {
         }
     }
 
-    class HostActivity extends HostContext {
+    class NavActivity extends NavContext {
 
-        HostActivity(Activity activity) {
+        NavActivity(Activity activity) {
             super(activity);
         }
 
@@ -69,11 +74,11 @@ interface NavHost {
         }
     }
 
-    class HostFragment extends HostContext {
+    class NavFragment extends NavContext {
 
         final Fragment fragment;
 
-        HostFragment(Fragment fragment) {
+        NavFragment(Fragment fragment) {
             super(fragment.getContext());
             this.fragment = fragment;
         }
