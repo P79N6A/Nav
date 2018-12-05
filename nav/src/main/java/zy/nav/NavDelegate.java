@@ -18,12 +18,16 @@ import java.util.Set;
 
 final class NavDelegate {
 
+    private final Initiator initiator;
+
     private final Request request;
 
     private final List<Interceptor> interceptorList;
 
-    NavDelegate(Request request) {
-        this.request = request;
+    NavDelegate(Initiator initiator) {
+        this.initiator = initiator;
+        this.request = Request.create();
+        this.request.context(initiator.getContext());
         interceptorList = new ArrayList<>();
     }
 
@@ -31,7 +35,7 @@ final class NavDelegate {
         beforeTo(uri);
         Intent intent = resolve(uri);
         if (intent != null) {
-            request.initiator.startActivity(intent);
+            initiator.startActivity(intent);
         }
     }
 
@@ -40,7 +44,7 @@ final class NavDelegate {
         request.requestCode(requestCode);
         Intent intent = resolve(uri);
         if (intent != null) {
-            request.initiator.startActivityForResult(intent, requestCode);
+            initiator.startActivityForResult(intent, requestCode);
         }
     }
 

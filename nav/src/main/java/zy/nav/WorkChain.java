@@ -16,7 +16,6 @@ final class WorkChain implements Interceptor.Chain {
         this.index = index;
     }
 
-
     @Override
     public Request request() {
         return request;
@@ -24,10 +23,11 @@ final class WorkChain implements Interceptor.Chain {
 
     @Override
     public Response process(Request request) {
-        if (index + 1 >= interceptorList.size() - 1) {
+        if (index >= interceptorList.size()) {
             throw new AssertionError("index out");
         }
-        WorkChain chain = new WorkChain(interceptorList, request, index + 1);
-        return chain.process(request);
+        WorkChain next = new WorkChain(interceptorList, request, index + 1);
+        Interceptor interceptor = interceptorList.get(index);
+        return interceptor.intercept(next);
     }
 }

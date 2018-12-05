@@ -1,14 +1,12 @@
 package zy.nav;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 
 public final class Request {
 
-    final Initiator initiator;
+    private Context context;
 
     private Uri uri;
 
@@ -16,25 +14,20 @@ public final class Request {
 
     private Bundle params;
 
-    private Request(Initiator initiator) {
-        this.initiator = initiator;
+    private Request() {
         this.params = new Bundle();
     }
 
-    private static Request create(Initiator initiator) {
-        return new Request(initiator);
+    static Request create() {
+        return new Request();
     }
 
-    static Request create(Context context) {
-        return create(Initiator.Factory.from(context));
+    void context(Context context) {
+        this.context = context;
     }
 
-    static Request create(Activity activity) {
-        return create(Initiator.Factory.from(activity));
-    }
-
-    static Request create(Fragment fragment) {
-        return create(Initiator.Factory.from(fragment));
+    Context context() {
+        return context;
     }
 
     void uri(Uri uri) {

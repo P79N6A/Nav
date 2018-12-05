@@ -25,24 +25,24 @@ public final class Nav {
 
     private final NavDelegate delegate;
 
-    private Nav(Request request) {
-        this.delegate = new NavDelegate(request);
+    private Nav(Initiator initiator) {
+        this.delegate = new NavDelegate(initiator);
     }
 
     public static Nav from(Context context) {
-        return create(Request.create(context));
+        return create(Initiator.Factory.from(context));
     }
 
     public static Nav from(Activity activity) {
-        return create(Request.create(activity));
+        return create(Initiator.Factory.from(activity));
     }
 
     public static Nav from(Fragment fragment) {
-        return create(Request.create(fragment));
+        return create(Initiator.Factory.from(fragment));
     }
 
-    private static Nav create(Request request) {
-        return new Nav(request);
+    private static Nav create(Initiator initiator) {
+        return new Nav(initiator);
     }
 
     public void to(String url) {
