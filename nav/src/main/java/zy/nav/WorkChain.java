@@ -4,13 +4,13 @@ import java.util.List;
 
 final class WorkChain implements Interceptor.Chain {
 
-    final List<Interceptor> interceptorList;
+    private final List<Interceptor> interceptorList;
 
-    final Request request;
+    private final Request request;
 
-    final int index;
+    private final int index;
 
-    public WorkChain(List<Interceptor> interceptorList, Request request, int index) {
+    WorkChain(List<Interceptor> interceptorList, Request request, int index) {
         this.interceptorList = interceptorList;
         this.request = request;
         this.index = index;
@@ -25,8 +25,9 @@ final class WorkChain implements Interceptor.Chain {
     @Override
     public Response process(Request request) {
         if (index + 1 >= interceptorList.size() - 1) {
-
+            throw new AssertionError("index out");
         }
-        return null;
+        WorkChain chain = new WorkChain(interceptorList, request, index + 1);
+        return chain.process(request);
     }
 }

@@ -14,7 +14,7 @@ public final class Request {
 
     private int requestCode;
 
-    Bundle params;
+    private Bundle params;
 
     private Request(Initiator initiator) {
         this.initiator = initiator;
@@ -43,6 +43,10 @@ public final class Request {
 
     public Uri uri() {
         return uri;
+    }
+
+    public Bundle params() {
+        return params;
     }
 
     void requestCode(int requestCode) {

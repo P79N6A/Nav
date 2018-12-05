@@ -7,7 +7,7 @@ final class Utils {
     }
 
     static void assertAndThrow(boolean established, String msg) {
-        if (established) {
+        if (!established) {
             return;
         }
         throw new RuntimeException(msg);
