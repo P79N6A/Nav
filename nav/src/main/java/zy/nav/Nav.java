@@ -84,6 +84,11 @@ public final class Nav {
         return delegate.resolve(uri);
     }
 
+    public Nav addFlag(int flag) {
+        delegate.addFlag(flag);
+        return this;
+    }
+
     public Nav withInterceptor(@NonNull Interceptor interceptor) {
         delegate.withInterceptor(interceptor);
         return this;

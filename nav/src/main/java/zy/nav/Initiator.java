@@ -5,11 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
-/**
- * 路由发起者
- * 因为Fragment#startActivityForResult用宿主Activity来发起的话，走不到Fragment里的onActivityResult方法，
- * 所以抽取该接口
- */
 interface Initiator {
 
     Context getContext();
@@ -38,7 +33,7 @@ interface Initiator {
         final Context context;
 
         NavContext(Context context) {
-            Utils.requireNonNull(context, "context must not be null");
+            Utils.requireNonNull(context, "context == null");
             this.context = context;
         }
 
@@ -57,7 +52,7 @@ interface Initiator {
 
         @Override
         public void startActivityForResult(Intent intent, int requestCode) {
-            throw new IllegalArgumentException("unsupported call startActivityForResult on "
+            throw new UnsupportedOperationException("unsupported call startActivityForResult on "
                     + context.getClass().getName());
         }
     }

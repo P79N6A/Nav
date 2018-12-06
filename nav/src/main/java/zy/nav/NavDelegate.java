@@ -63,6 +63,10 @@ final class NavDelegate {
         }
     }
 
+    void addFlag(int flag) {
+
+    }
+
     void withInterceptor(Interceptor interceptor) {
         interceptorList.add(interceptor);
     }
@@ -201,4 +205,5 @@ final class NavDelegate {
     void withBinder(String key, IBinder value) {
         request.params().putBinder(key, value);
     }
+
 }
