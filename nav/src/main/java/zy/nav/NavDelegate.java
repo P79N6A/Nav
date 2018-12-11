@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.util.Size;
 import android.util.SizeF;
 import android.util.SparseArray;
@@ -14,7 +15,6 @@ import android.util.SparseArray;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 final class NavDelegate {
 
@@ -26,45 +26,28 @@ final class NavDelegate {
 
     NavDelegate(Initiator initiator) {
         this.initiator = initiator;
-        this.request = Request.create();
-        this.request.context(initiator.getContext());
+        this.request = Request.newRequest();
         interceptorList = new ArrayList<>();
     }
 
-    void to(Uri uri) {
-        beforeTo(uri);
-        Intent intent = resolve(uri);
-        if (intent != null) {
-            initiator.startActivity(intent);
-        }
-    }
-
     void to(Uri uri, int requestCode) {
-        beforeTo(uri);
+        request.uri(uri);
         request.requestCode(requestCode);
-        Intent intent = resolve(uri);
-        if (intent != null) {
-            initiator.startActivityForResult(intent, requestCode);
-        }
+        NavCall.newCall(interceptorList, request, initiator, true).call();
     }
 
     Intent resolve(Uri uri) {
-        beforeTo(uri);
-        Response response = NavCall.newCall(interceptorList, request).call();
+        request.uri(uri);
+        Response response = NavCall.newCall(interceptorList, request, initiator, false).call();
         return response.intent();
     }
 
-    private void beforeTo(Uri uri) {
-        request.uri(uri);
-        withString(Nav.RAW_URI, uri.toString());
-        Set<String> names = uri.getQueryParameterNames();
-        for (String name : names) {
-            withString(name, uri.getQueryParameter(name));
-        }
+    void addFlag(int flag) {
+        request.addFlag(flag);
     }
 
-    void addFlag(int flag) {
-
+    void withOptions(ActivityOptionsCompat options) {
+        request.options(options);
     }
 
     void withInterceptor(Interceptor interceptor) {
@@ -205,5 +188,4 @@ final class NavDelegate {
     void withBinder(String key, IBinder value) {
         request.params().putBinder(key, value);
     }
-
 }

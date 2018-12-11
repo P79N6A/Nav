@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Size;
@@ -23,6 +24,8 @@ public final class Nav {
 
     public static final String RAW_URI = "__Nav__Raw__Uri__";
 
+    private static final int NO_REQUEST_CODE = -1;
+
     private final NavDelegate delegate;
 
     private Nav(Initiator initiator) {
@@ -30,62 +33,82 @@ public final class Nav {
     }
 
     public static Nav from(Context context) {
-        return create(Initiator.Factory.from(context));
+        return from(Initiator.Factory.from(context));
     }
 
     public static Nav from(Activity activity) {
-        return create(Initiator.Factory.from(activity));
+        return from(Initiator.Factory.from(activity));
     }
 
     public static Nav from(Fragment fragment) {
-        return create(Initiator.Factory.from(fragment));
+        return from(Initiator.Factory.from(fragment));
     }
 
-    private static Nav create(Initiator initiator) {
+    static Nav from(Initiator initiator) {
         return new Nav(initiator);
     }
 
     public void to(String url) {
-        Utils.assertAndThrow(TextUtils.isEmpty(url),
-                "url is empty");
+        if (TextUtils.isEmpty(url)) {
+            return;
+        }
         to(Uri.parse(url));
     }
 
     public void to(Uri uri) {
-        Utils.requireNonNull(uri, "uri == null");
-        Utils.assertAndThrow(!uri.isHierarchical(),
-                "This isn't a hierarchical URI.");
-        delegate.to(uri);
+        if (uri == null) {
+            return;
+        }
+        if (!uri.isHierarchical()) {
+            return;
+        }
+        delegate.to(uri, NO_REQUEST_CODE);
     }
 
     public void to(String url, int requestCode) {
-        Utils.assertAndThrow(TextUtils.isEmpty(url),
-                "url is empty");
+        if (TextUtils.isEmpty(url)) {
+            return;
+        }
         to(Uri.parse(url), requestCode);
     }
 
     public void to(Uri uri, int requestCode) {
-        Utils.requireNonNull(uri, "uri == null");
-        Utils.assertAndThrow(!uri.isHierarchical(),
-                "This isn't a hierarchical URI.");
+        if (uri == null) {
+            return;
+        }
+        if (!uri.isHierarchical()) {
+            return;
+        }
+        if (requestCode < 0) {
+            return;
+        }
         delegate.to(uri, requestCode);
     }
 
     public Intent resolve(String url) {
-        Utils.assertAndThrow(TextUtils.isEmpty(url),
-                "url is empty");
+        if (TextUtils.isEmpty(url)) {
+            return Response.failure("url is empty").intent();
+        }
         return resolve(Uri.parse(url));
     }
 
     public Intent resolve(Uri uri) {
-        Utils.requireNonNull(uri, "uri == null");
-        Utils.assertAndThrow(!uri.isHierarchical(),
-                "This isn't a hierarchical URI.");
+        if (uri == null) {
+            return Response.failure("uri == null").intent();
+        }
+        if (!uri.isHierarchical()) {
+            return Response.failure("uri isn't a hierarchical url").intent();
+        }
         return delegate.resolve(uri);
     }
 
     public Nav addFlag(int flag) {
         delegate.addFlag(flag);
+        return this;
+    }
+
+    public Nav withOptions(ActivityOptionsCompat options) {
+        delegate.withOptions(options);
         return this;
     }
 

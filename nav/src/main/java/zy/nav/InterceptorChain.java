@@ -2,7 +2,7 @@ package zy.nav;
 
 import java.util.List;
 
-final class WorkChain implements Interceptor.Chain {
+final class InterceptorChain implements Interceptor.Chain {
 
     private final List<Interceptor> interceptorList;
 
@@ -10,7 +10,7 @@ final class WorkChain implements Interceptor.Chain {
 
     private final int index;
 
-    WorkChain(List<Interceptor> interceptorList, Request request, int index) {
+    InterceptorChain(List<Interceptor> interceptorList, Request request, int index) {
         this.interceptorList = interceptorList;
         this.request = request;
         this.index = index;
@@ -26,7 +26,7 @@ final class WorkChain implements Interceptor.Chain {
         if (index >= interceptorList.size()) {
             throw new AssertionError("index out");
         }
-        WorkChain next = new WorkChain(interceptorList, request, index + 1);
+        InterceptorChain next = new InterceptorChain(interceptorList, request, index + 1);
         Interceptor interceptor = interceptorList.get(index);
         return interceptor.intercept(next);
     }
