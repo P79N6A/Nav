@@ -43,7 +43,7 @@ public final class Nav {
         return from(Initiator.Factory.from(fragment));
     }
 
-    static Nav from(Initiator initiator) {
+    private static Nav from(Initiator initiator) {
         return new Nav(initiator);
     }
 
