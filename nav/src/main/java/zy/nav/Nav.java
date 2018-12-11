@@ -2,7 +2,6 @@ package zy.nav;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -83,23 +82,6 @@ public final class Nav {
             return;
         }
         delegate.to(uri, requestCode);
-    }
-
-    public Intent resolve(String url) {
-        if (TextUtils.isEmpty(url)) {
-            return Response.failure("url is empty").intent();
-        }
-        return resolve(Uri.parse(url));
-    }
-
-    public Intent resolve(Uri uri) {
-        if (uri == null) {
-            return Response.failure("uri == null").intent();
-        }
-        if (!uri.isHierarchical()) {
-            return Response.failure("uri isn't a hierarchical url").intent();
-        }
-        return delegate.resolve(uri);
     }
 
     public Nav addFlag(int flag) {

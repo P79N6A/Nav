@@ -15,11 +15,8 @@ class RetryAndInitiateInterceptor implements Interceptor {
 
     private final Initiator initiator;
 
-    private final boolean autoSkip;
-
-    RetryAndInitiateInterceptor(Initiator initiator, boolean autoSkip) {
+    RetryAndInitiateInterceptor(Initiator initiator) {
         this.initiator = initiator;
-        this.autoSkip = autoSkip;
         this.count = 0;
     }
 
@@ -37,7 +34,7 @@ class RetryAndInitiateInterceptor implements Interceptor {
             }
         }
         Response response = chain.process(request);
-        if (response.success() && autoSkip) {
+        if (response.success()) {
             ActivityOptionsCompat optionsCompat = request.options();
             initiator.startActivityForResult(response.intent(),
                     request.requestCode(), optionsCompat == null ? null : optionsCompat.toBundle());

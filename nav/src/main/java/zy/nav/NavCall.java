@@ -19,15 +19,15 @@ class NavCall implements Callable<Response> {
 
     private final RetryAndInitiateInterceptor retryAndInitiateInterceptor;
 
-    private NavCall(List<Interceptor> interceptorList, Request request, Initiator initiator, boolean autoSkip) {
+    private NavCall(List<Interceptor> interceptorList, Request request, Initiator initiator) {
         this.interceptorList = interceptorList;
         this.request = request;
         this.initiator = initiator;
-        this.retryAndInitiateInterceptor = new RetryAndInitiateInterceptor(initiator, autoSkip);
+        this.retryAndInitiateInterceptor = new RetryAndInitiateInterceptor(initiator);
     }
 
-    static NavCall newCall(List<Interceptor> interceptorList, Request request, Initiator initiator, boolean autoSkip) {
-        return new NavCall(interceptorList, request, initiator, autoSkip);
+    static NavCall newCall(List<Interceptor> interceptorList, Request request, Initiator initiator) {
+        return new NavCall(interceptorList, request, initiator);
     }
 
     @Override

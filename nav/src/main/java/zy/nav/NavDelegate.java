@@ -1,6 +1,5 @@
 package zy.nav;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,13 +32,7 @@ final class NavDelegate {
     void to(Uri uri, int requestCode) {
         request.uri(uri);
         request.requestCode(requestCode);
-        NavCall.newCall(interceptorList, request, initiator, true).call();
-    }
-
-    Intent resolve(Uri uri) {
-        request.uri(uri);
-        Response response = NavCall.newCall(interceptorList, request, initiator, false).call();
-        return response.intent();
+        NavCall.newCall(interceptorList, request, initiator).call();
     }
 
     void addFlag(int flag) {
