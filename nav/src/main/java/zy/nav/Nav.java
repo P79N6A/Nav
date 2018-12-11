@@ -3,21 +3,11 @@ package zy.nav;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Size;
-import android.util.SizeF;
-import android.util.SparseArray;
-
-import java.io.Serializable;
-import java.util.ArrayList;
 
 public final class Nav {
 
@@ -55,10 +45,7 @@ public final class Nav {
     }
 
     public void to(Uri uri) {
-        if (uri == null) {
-            return;
-        }
-        if (!uri.isHierarchical()) {
+        if (!Utils.checkUri(uri)) {
             return;
         }
         delegate.to(uri, NO_REQUEST_CODE);
@@ -72,10 +59,7 @@ public final class Nav {
     }
 
     public void to(Uri uri, int requestCode) {
-        if (uri == null) {
-            return;
-        }
-        if (!uri.isHierarchical()) {
+        if (!Utils.checkUri(uri)) {
             return;
         }
         if (requestCode < 0) {
@@ -104,18 +88,8 @@ public final class Nav {
         return this;
     }
 
-    public Nav withBundle(String key, Bundle bundle) {
-        delegate.withBundle(key, bundle);
-        return this;
-    }
-
     public Nav withBoolean(String key, boolean bundle) {
         delegate.withBoolean(key, bundle);
-        return this;
-    }
-
-    public Nav withBooleanArray(String key, boolean[] bundle) {
-        delegate.withBooleanArray(key, bundle);
         return this;
     }
 
@@ -124,18 +98,8 @@ public final class Nav {
         return this;
     }
 
-    public Nav withByteArray(String key, byte[] value) {
-        delegate.withByteArray(key, value);
-        return this;
-    }
-
     public Nav withChar(String key, char value) {
         delegate.withChar(key, value);
-        return this;
-    }
-
-    public Nav withCharArray(String key, char[] value) {
-        delegate.withCharArray(key, value);
         return this;
     }
 
@@ -144,23 +108,8 @@ public final class Nav {
         return this;
     }
 
-    public Nav withShortArray(String key, short[] value) {
-        delegate.withShortArray(key, value);
-        return this;
-    }
-
     public Nav withInt(String key, int value) {
         delegate.withInt(key, value);
-        return this;
-    }
-
-    public Nav withIntArray(String key, int[] value) {
-        delegate.withIntArray(key, value);
-        return this;
-    }
-
-    public Nav withIntegerArrayList(String key, ArrayList<Integer> value) {
-        delegate.withIntegerArrayList(key, value);
         return this;
     }
 
@@ -169,18 +118,8 @@ public final class Nav {
         return this;
     }
 
-    public Nav withLongArray(String key, long[] value) {
-        delegate.withLongArray(key, value);
-        return this;
-    }
-
     public Nav withFloat(String key, float value) {
         delegate.withFloat(key, value);
-        return this;
-    }
-
-    public Nav withFloatArray(String key, float[] value) {
-        delegate.withFloatArray(key, value);
         return this;
     }
 
@@ -189,82 +128,24 @@ public final class Nav {
         return this;
     }
 
-    public Nav withDoubleArray(String key, double[] value) {
-        delegate.withDoubleArray(key, value);
-        return this;
-    }
-
     public Nav withString(String key, String value) {
         delegate.withString(key, value);
         return this;
     }
 
-    public Nav withStringArray(String key, String[] value) {
-        delegate.withStringArray(key, value);
+    public Nav withObject(String key, Object value) {
+        delegate.withObject(key, value);
         return this;
     }
 
-    public Nav withStringArrayList(String key, ArrayList<String> value) {
-        delegate.withStringArrayList(key, value);
-        return this;
+    //暂不使用自动注册
+
+    public static void setJsonMarshaller(JsonMarshaller jsonMarshaller) {
+        NavDelegate.jsonMarshaller = jsonMarshaller;
     }
 
-    public Nav withCharSequence(String key, CharSequence value) {
-        delegate.withCharSequence(key, value);
-        return this;
-    }
-
-    public Nav withCharSequenceArray(String key, CharSequence[] value) {
-        delegate.withCharSequenceArray(key, value);
-        return this;
-    }
-
-    public Nav withCharSequenceArrayList(String key, ArrayList<CharSequence> value) {
-        delegate.withCharSequenceArrayList(key, value);
-        return this;
-    }
-
-    public Nav withParcelable(String key, Parcelable value) {
-        delegate.withParcelable(key, value);
-        return this;
-    }
-
-    public Nav withParcelableArray(String key, Parcelable[] value) {
-        delegate.withParcelableArray(key, value);
-        return this;
-    }
-
-    public Nav withParcelableArrayList(String key, ArrayList<? extends Parcelable> value) {
-        delegate.withParcelableArrayList(key, value);
-        return this;
-    }
-
-    public Nav withSparseParcelableArray(String key, SparseArray<? extends Parcelable> value) {
-        delegate.withSparseParcelableArray(key, value);
-        return this;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public Nav withSize(String key, Size value) {
-        delegate.withSize(key, value);
-        return this;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public Nav withSizeF(String key, SizeF value) {
-        delegate.withSizeF(key, value);
-        return this;
-    }
-
-    public Nav withSerializable(String key, Serializable value) {
-        delegate.withSerializable(key, value);
-        return this;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-    public Nav withBinder(String key, IBinder value) {
-        delegate.withBinder(key, value);
-        return this;
+    public static JsonMarshaller getJsonMarshaller() {
+        return NavDelegate.jsonMarshaller;
     }
 
 }
