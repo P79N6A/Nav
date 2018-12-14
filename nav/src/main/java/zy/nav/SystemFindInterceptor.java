@@ -26,9 +26,9 @@ class SystemFindInterceptor implements Interceptor {
             intent.setData(request.uri());
             intent.setAction(Intent.ACTION_VIEW);
             ComponentName componentName = intent.resolveActivity(manager);
+            response.success(componentName != null);
             if (componentName != null) {
                 intent.setComponent(componentName);
-                response.success(true);
             }
         }
         return response;
