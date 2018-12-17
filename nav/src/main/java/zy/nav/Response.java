@@ -32,9 +32,6 @@ public final class Response {
 
     public Response success(boolean success) {
         this.success = success;
-        if (success) {
-            message("success");
-        }
         return this;
     }
 

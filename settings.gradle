@@ -1,1 +1,1 @@
-include ':app', ':nav', ':nav_annotation', ':nav_compiler'
+include ':app', ':nav', ':nav_annotation', ':nav_compiler', ':nav_register'

@@ -1,16 +1,14 @@
 package zy.nav;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.text.TextUtils;
 
-import zy.nav.exception.InterceptException;
+import zy.nav.exception.NavException;
 import zy.nav.exception.RedirectException;
 
 public final class Request {
 
-    private Uri uri;
+    private String url;
 
     private int requestCode;
 
@@ -28,12 +26,12 @@ public final class Request {
         return new Request();
     }
 
-    void uri(Uri uri) {
-        this.uri = uri;
+    void url(String url) {
+        this.url = url;
     }
 
-    public Uri uri() {
-        return uri;
+    public String url() {
+        return url;
     }
 
     public Bundle params() {
@@ -65,15 +63,11 @@ public final class Request {
     }
 
     public void intercept(String msg) {
-        throw new InterceptException(msg);
+        throw new NavException(msg);
     }
 
     public void redirect(String url) {
-        redirect(Uri.parse(TextUtils.isEmpty(url) ? "" : url));
-    }
-
-    public void redirect(Uri uri) {
-        uri(uri);
-        throw new RedirectException("Redirect -> " + uri.toString());
+        url(url);
+        throw new RedirectException("Redirect -> " + url);
     }
 }

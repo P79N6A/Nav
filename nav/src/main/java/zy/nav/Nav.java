@@ -2,12 +2,12 @@ package zy.nav;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 
 public final class Nav {
 
@@ -37,35 +37,22 @@ public final class Nav {
         return new Nav(initiator);
     }
 
+    @Nullable
+    public static <T> T getService(@NonNull Class<T> serviceClass) {
+        return NavDelegate.getService(serviceClass);
+    }
+
+    @Nullable
+    public static <T> T getService(@NonNull String uri) {
+        return NavDelegate.getService(uri);
+    }
+
     public void to(String url) {
-        if (TextUtils.isEmpty(url)) {
-            return;
-        }
-        to(Uri.parse(url));
+        delegate.to(url, NO_REQUEST_CODE);
     }
 
-    public void to(Uri uri) {
-        if (!Utils.checkUri(uri)) {
-            return;
-        }
-        delegate.to(uri, NO_REQUEST_CODE);
-    }
-
-    public void to(String url, int requestCode) {
-        if (TextUtils.isEmpty(url)) {
-            return;
-        }
-        to(Uri.parse(url), requestCode);
-    }
-
-    public void to(Uri uri, int requestCode) {
-        if (!Utils.checkUri(uri)) {
-            return;
-        }
-        if (requestCode < 0) {
-            return;
-        }
-        delegate.to(uri, requestCode);
+    public void to(String url, @IntRange(from = 0) int requestCode) {
+        delegate.to(url, requestCode);
     }
 
     public Nav addFlag(int flag) {
@@ -136,16 +123,6 @@ public final class Nav {
     public Nav withObject(String key, Object value) {
         delegate.withObject(key, value);
         return this;
-    }
-
-    //暂不使用自动注册
-
-    public static void setJsonMarshaller(JsonMarshaller jsonMarshaller) {
-        NavDelegate.jsonMarshaller = jsonMarshaller;
-    }
-
-    public static JsonMarshaller getJsonMarshaller() {
-        return NavDelegate.jsonMarshaller;
     }
 
 }

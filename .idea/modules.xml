@@ -7,6 +7,7 @@
       <module fileurl="file://$PROJECT_DIR$/nav/nav.iml" filepath="$PROJECT_DIR$/nav/nav.iml" />
       <module fileurl="file://$PROJECT_DIR$/nav_annotation/nav_annotation.iml" filepath="$PROJECT_DIR$/nav_annotation/nav_annotation.iml" />
       <module fileurl="file://$PROJECT_DIR$/nav_compiler/nav_compiler.iml" filepath="$PROJECT_DIR$/nav_compiler/nav_compiler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nav_register/nav_register.iml" filepath="$PROJECT_DIR$/nav_register/nav_register.iml" />
     </modules>
   </component>
 </project>

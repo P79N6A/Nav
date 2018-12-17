@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/nav" />
             <option value="$PROJECT_DIR$/nav_annotation" />
             <option value="$PROJECT_DIR$/nav_compiler" />
+            <option value="$PROJECT_DIR$/nav_register" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

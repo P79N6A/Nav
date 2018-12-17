@@ -1,6 +1,5 @@
 package zy.nav;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 
@@ -15,18 +14,24 @@ final class NavDelegate {
 
     private final List<Interceptor> interceptorList;
 
-    static JsonMarshaller jsonMarshaller;
-
     NavDelegate(Initiator initiator) {
         this.initiator = initiator;
         this.request = Request.newRequest();
         interceptorList = new ArrayList<>();
     }
 
-    void to(Uri uri, int requestCode) {
-        request.uri(uri);
+    void to(String url, int requestCode) {
+        request.url(url);
         request.requestCode(requestCode);
         NavCall.newCall(interceptorList, request, initiator).call();
+    }
+
+    static <T> T getService(Class<T> serviceClass) {
+        return ServiceManager.getService(serviceClass);
+    }
+
+    static <T> T getService(String uri) {
+        return ServiceManager.getService(uri);
     }
 
     void addFlag(int flag) {
@@ -82,8 +87,9 @@ final class NavDelegate {
     }
 
     void withObject(String key, Object value) {
-        if (jsonMarshaller != null) {
-            withString(key, jsonMarshaller.toJson(value));
+        JsonMarshaller marshaller = Nav.getService(JsonMarshaller.class);
+        if (marshaller != null) {
+            request.params().putString(key, marshaller.toJson(value));
         }
     }
 }

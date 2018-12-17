@@ -2,14 +2,10 @@ package zy.nav;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
-import zy.nav.exception.InterceptException;
-import zy.nav.exception.NavException;
 import zy.nav.exception.RedirectException;
-import zy.nav.exception.RetryException;
 
-class NavCall implements Callable<Response> {
+final class NavCall {
 
     private final Request request;
 
@@ -30,30 +26,23 @@ class NavCall implements Callable<Response> {
         return new NavCall(interceptorList, request, initiator);
     }
 
-    @Override
-    public Response call() {
+    final Response call() {
         List<Interceptor> list = new ArrayList<>();
         list.add(retryAndInitiateInterceptor);
         if (!Utils.isEmpty(interceptorList)) {
             list.addAll(interceptorList);
         }
         list.add(new SystemFindInterceptor(initiator.context()));
-        list.add(new RouteFindInterceptor());
+        list.add(new RouteFindInterceptor(initiator.context()));
         Interceptor.Chain chain = new InterceptorChain(list, request, 0);
         try {
             return chain.process(request);
-        } catch (NavException e) {
-            if (e instanceof RetryException) {
-                return Response.failure(e.getMessage());
-            }
-            if (e instanceof InterceptException) {
-                return Response.failure(e.getMessage());
-            }
+        } catch (Exception e) {
             if (e instanceof RedirectException) {
                 return call();
             }
+            return Response.failure(e.getMessage());
         }
-        return Response.failure("unknown");
     }
 
 }

@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 
 class SystemFindInterceptor implements Interceptor {
 
@@ -23,12 +24,16 @@ class SystemFindInterceptor implements Interceptor {
         if (!response.success()) {
             Intent intent = response.intent();
             intent.setPackage(packageName);
-            intent.setData(request.uri());
             intent.setAction(Intent.ACTION_VIEW);
-            ComponentName componentName = intent.resolveActivity(manager);
-            response.success(componentName != null);
-            if (componentName != null) {
-                intent.setComponent(componentName);
+            NavUri navUri = NavUri.build(request.url());
+            for (Uri uri : navUri.uriList) {
+                intent.setData(uri);
+                ComponentName componentName = intent.resolveActivity(manager);
+                response.success(componentName != null);
+                if (componentName != null) {
+                    intent.setComponent(componentName);
+                    break;
+                }
             }
         }
         return response;
