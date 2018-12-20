@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import java.lang.ref.WeakReference;
+
 interface Initiator {
 
     Context context();
@@ -32,10 +34,14 @@ interface Initiator {
 
     class NavContext implements Initiator {
 
-        final Context context;
+        final WeakReference<Context> context;
 
         @Override
         public Context context() {
+            Context context = this.context.get();
+            if (context == null) {
+                throw new NullPointerException("context == null");
+            }
             return context;
         }
 
@@ -43,13 +49,13 @@ interface Initiator {
             if (context == null) {
                 throw new NullPointerException("context == null");
             }
-            this.context = context;
+            this.context = new WeakReference<>(context);
         }
 
         @Override
         public void startActivityForResult(Intent intent, int requestCode, Bundle option) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
+            context().startActivity(intent);
         }
     }
 
@@ -61,7 +67,7 @@ interface Initiator {
 
         @Override
         public void startActivityForResult(Intent intent, int requestCode, Bundle option) {
-            Activity activity = (Activity) context;
+            Activity activity = (Activity) context();
             if (option != null) {
                 activity.startActivityForResult(intent, requestCode, option);
             } else {
@@ -72,15 +78,19 @@ interface Initiator {
 
     class NavFragment extends NavContext {
 
-        final Fragment fragment;
+        final WeakReference<Fragment> fragment;
 
         NavFragment(Fragment fragment) {
             super(fragment.getContext());
-            this.fragment = fragment;
+            this.fragment = new WeakReference<>(fragment);
         }
 
         @Override
         public void startActivityForResult(Intent intent, int requestCode, Bundle option) {
+            Fragment fragment = this.fragment.get();
+            if (fragment == null) {
+                throw new NullPointerException("fragment == null");
+            }
             if (option != null) {
                 fragment.startActivityForResult(intent, requestCode, option);
             } else {
